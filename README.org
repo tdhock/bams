@@ -1,5 +1,9 @@
 bams: breakpoint annotation model smoothing
 
+This package was published as supporting material for [[http://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-14-164][Learning
+smoothing models of copy number profiles using breakpoint annotations]],
+BMC Bioinfo 2013.
+
 The bams package has been moved to the [[https://cran.r-project.org/src/contrib/Archive/bams/][Archive]] on CRAN, but is still
 available in this GitHub repos.
 

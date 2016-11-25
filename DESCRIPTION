@@ -1,0 +1,13 @@
+Package: bams
+Maintainer: Toby Dylan Hocking <toby@sg.cs.titech.ac.jp>
+Author: Toby Dylan Hocking
+Version: 2014.12.22
+License: GPL-3
+Title: Breakpoint annotation model smoothing
+Description: Code and data to compare several change-point detection models
+	     on DNA copy number profiles.
+Suggests: GLAD, DNAcopy, xtable, cghFLasso, flsa, cghseg, grid, gada,
+	  plyr, ggplot2 (>= 0.9.0), RColorBrewer, reshape2, lattice, proto,
+	  changepoint, wbs
+Depends: R (>= 2.10)
+Additional_repositories: http://r-forge.r-project.org

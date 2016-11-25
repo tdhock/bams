@@ -1,0 +1,73 @@
+bams: breakpoint annotation model smoothing
+
+The bams package has been moved to the [[https://cran.r-project.org/src/contrib/Archive/bams/][Archive]] on CRAN, but is still
+available in this GitHub repos.
+
+* Installation
+
+#+BEGIN_SRC R
+  devtools::install_github("tdhock/bams")
+#+END_SRC
+
+The neuroblastomaDetailed data set contains manually determined labels
+about genomic locations with and without breakpoints in the
+[[https://cran.r-project.org/web/packages/neuroblastoma/index.html][neuroblastoma]] data set.
+
+#+BEGIN_SRC R
+  install.packages("neuroblastoma")
+#+END_SRC
+
+* Usage
+
+Load the neuroblastoma and neuroblastomaDetailed data sets, then plot
+both sets of labels on top of one segmentation problem (one unique
+combination of the profile.id and chromosome variables).
+
+#+BEGIN_SRC R
+  data(neuroblastomaDetailed, package="bams")
+  data(neuroblastoma, package="neuroblastoma")
+  library(data.table)
+  profile.dt <- data.table(neuroblastoma$profiles)
+  breakpoint.colors <- c(
+    ">0breakpoints"="#a445ee",
+    "1breakpoint"="#ff7d7d",
+    "0breakpoints"="#f6f4bf")
+  neuroblastoma.labels <- data.table(neuroblastoma$annotations)
+  neuroblastoma.labels[, label := factor({
+    ifelse(annotation=="breakpoint", ">0breakpoints", "0breakpoints")
+  }, names(breakpoint.colors))]
+  detailed.labels <- data.table(neuroblastomaDetailed)
+  detailed.labels[, label := factor({
+    ifelse(annotation=="normal", "0breakpoints", paste(annotation))
+  }, names(breakpoint.colors))]
+  labels.dt <- rbind(
+    data.table(set.name="original", neuroblastoma.labels),
+    data.table(set.name="detailed", detailed.labels))
+  labels.dt[, problem := paste(profile.id, chromosome)]
+  profile.dt[, problem := paste(profile.id, chromosome)]
+  label.counts <- labels.dt[, list(labels=.N), by=.(set.name, problem)]
+  label.counts[order(labels),]
+  problem.vec <- c("331 4")
+  some <- function(dt){
+    dt[problem %in% problem.vec,]
+  }
+  library(ggplot2)
+  ggplot()+
+    theme_bw()+
+    theme(panel.margin=grid::unit(0, "lines"))+
+    facet_grid(set.name ~ problem, scales="free", space="free", labeller=label_both)+
+    scale_fill_manual(values=breakpoint.colors)+
+    geom_tallrect(aes(
+      xmin=min/1e6,
+      xmax=max/1e6,
+      fill=label),
+                  data=some(labels.dt),
+                  color="grey",
+                  alpha=0.5)+
+    geom_point(aes(
+      position/1e6, logratio),
+               shape=1,
+               data=some(profile.dt))
+#+END_SRC
+
+
